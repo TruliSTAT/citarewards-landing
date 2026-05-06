@@ -329,9 +329,105 @@
     /* ─── SCROLL REVEAL ─── */
     .reveal { opacity: 0; transform: translateY(30px); transition: opacity .6s ease, transform .6s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
-  </style>
+  
+.empire-ticker-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  height: 32px;
+  background: linear-gradient(90deg, #0a0f1e, #030712, #0a0f1e);
+  border-bottom: 1px solid rgba(245,158,11,0.2);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.empire-ticker-inner {
+  display: flex;
+  animation: empTicker 35s linear infinite;
+  white-space: nowrap;
+  align-items: center;
+}
+.empire-ticker-bar:hover .empire-ticker-inner { animation-play-state: paused; }
+@keyframes empTicker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.empire-ticker-item {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(245,158,11,0.75);
+  padding: 0 28px;
+  font-family: 'Plus Jakarta Sans', Inter, sans-serif;
+  text-decoration: none;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+.empire-ticker-item:hover { color: #f59e0b; }
+.empire-ticker-dot {
+  color: rgba(245,158,11,0.3);
+  font-size: 8px;
+  flex-shrink: 0;
+}
+body { padding-top: 32px !important; }
+</style>
 </head>
 <body>
+<div class="empire-ticker-bar" aria-label="Cita Empire navigation">
+  <div class="empire-ticker-inner">
+    <a href="https://citapros.com" class="empire-ticker-item">🔧 CitaPros</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citacoin.com" class="empire-ticker-item">🪙 CitaCoin</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citacentral.com" class="empire-ticker-item">🏛️ CitaCentral</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citadepot.com" class="empire-ticker-item">🏗️ CitaDepot</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citadocs.com" class="empire-ticker-item">📄 CitaDocs</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citacares.com" class="empire-ticker-item">❤️ CitaCares</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citahq.com" class="empire-ticker-item">🏢 CitaHQ</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citasocial.com" class="empire-ticker-item">📱 CitaSocial</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citatodo.com" class="empire-ticker-item">🎓 CitaTodo</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citarewards.com" class="empire-ticker-item">🎁 CitaRewards</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citaempire.com" class="empire-ticker-item">🏛️ CitaEmpire</a>
+    <span class="empire-ticker-dot">◈</span>
+    <span class="empire-ticker-item" style="color:rgba(255,255,255,0.25)">The Cita Empire · EST. MMXXVI · Built for the Trades</span>
+    <span class="empire-ticker-dot">◈</span>
+    <!-- Duplicate for seamless loop -->
+    <a href="https://citapros.com" class="empire-ticker-item">🔧 CitaPros</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citacoin.com" class="empire-ticker-item">🪙 CitaCoin</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citacentral.com" class="empire-ticker-item">🏛️ CitaCentral</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citadepot.com" class="empire-ticker-item">🏗️ CitaDepot</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citadocs.com" class="empire-ticker-item">📄 CitaDocs</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citacares.com" class="empire-ticker-item">❤️ CitaCares</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citahq.com" class="empire-ticker-item">🏢 CitaHQ</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citasocial.com" class="empire-ticker-item">📱 CitaSocial</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citatodo.com" class="empire-ticker-item">🎓 CitaTodo</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citarewards.com" class="empire-ticker-item">🎁 CitaRewards</a>
+    <span class="empire-ticker-dot">◈</span>
+    <a href="https://citaempire.com" class="empire-ticker-item">🏛️ CitaEmpire</a>
+    <span class="empire-ticker-dot">◈</span>
+    <span class="empire-ticker-item" style="color:rgba(255,255,255,0.25)">The Cita Empire · EST. MMXXVI · Built for the Trades</span>
+    <span class="empire-ticker-dot">◈</span>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav>
