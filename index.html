@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CitaRewards — Earn. Redeem. Win.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #D4A83A;
+      --gold-light: #f0c84a;
+      --gold-dim: rgba(212,168,58,0.15);
+      --bg: #0a0a0f;
+      --bg2: #0e0e16;
+      --bg3: #111827;
+      --card: #111827;
+      --border: rgba(212,168,58,0.2);
+      --text: #e8e8f0;
+      --muted: #8888a0;
+      --white: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: .5rem; text-decoration: none; }
+    .nav-logo-icon { font-size: 1.5rem; }
+    .nav-logo-text { font-size: 1.1rem; font-weight: 800; color: var(--gold); letter-spacing: -.02em; }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: .9rem; font-weight: 500; transition: color .2s; }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      background: var(--gold); color: #000; padding: .5rem 1.25rem;
+      border-radius: 8px; font-weight: 700; font-size: .875rem;
+      text-decoration: none; transition: background .2s;
+    }
+    .nav-cta:hover { background: var(--gold-light); }
+    @media(max-width:768px){ .nav-links { display:none; } }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 6rem 1.5rem 4rem;
+      position: relative; overflow: hidden; text-align: center;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(212,168,58,0.08) 0%, transparent 70%),
+                  radial-gradient(ellipse 60% 40% at 80% 80%, rgba(212,168,58,0.04) 0%, transparent 60%),
+                  var(--bg);
+    }
+    /* Floating coins */
+    .coins-container { position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+    .coin {
+      position: absolute; font-size: 2rem; opacity: 0;
+      animation: floatCoin linear infinite;
+    }
+    .coin:nth-child(1)  { left:10%; animation-duration:8s;  animation-delay:0s;   font-size:1.5rem; }
+    .coin:nth-child(2)  { left:25%; animation-duration:11s; animation-delay:2s;   font-size:2.5rem; }
+    .coin:nth-child(3)  { left:40%; animation-duration:9s;  animation-delay:4s;   font-size:1.2rem; }
+    .coin:nth-child(4)  { left:60%; animation-duration:13s; animation-delay:1s;   font-size:2rem; }
+    .coin:nth-child(5)  { left:75%; animation-duration:10s; animation-delay:5s;   font-size:1.8rem; }
+    .coin:nth-child(6)  { left:88%; animation-duration:7s;  animation-delay:3s;   font-size:1.3rem; }
+    .coin:nth-child(7)  { left:5%;  animation-duration:12s; animation-delay:6s;   font-size:2.2rem; }
+    .coin:nth-child(8)  { left:50%; animation-duration:9s;  animation-delay:7s;   font-size:1.6rem; }
+    @keyframes floatCoin {
+      0%   { transform: translateY(110vh) rotate(0deg);   opacity: 0; }
+      10%  { opacity: .4; }
+      90%  { opacity: .4; }
+      100% { transform: translateY(-20vh) rotate(360deg); opacity: 0; }
+    }
+    /* Glow orb */
+    .glow-orb {
+      position: absolute; width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,168,58,0.12) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%,-60%);
+      animation: pulse 6s ease-in-out infinite;
+      z-index: 1; pointer-events: none;
+    }
+    @keyframes pulse {
+      0%,100% { transform: translate(-50%,-60%) scale(1);   opacity:.7; }
+      50%      { transform: translate(-50%,-60%) scale(1.1); opacity:1; }
+    }
+
+    .hero-content { position: relative; z-index: 2; max-width: 800px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--gold-dim); border: 1px solid var(--border);
+      color: var(--gold); padding: .35rem 1rem; border-radius: 100px;
+      font-size: .8rem; font-weight: 600; letter-spacing: .05em;
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 4.2rem); font-weight: 800;
+      line-height: 1.1; letter-spacing: -.03em; color: var(--white);
+      margin-bottom: 1.25rem;
+    }
+    h1 span { color: var(--gold); }
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--muted);
+      max-width: 600px; margin: 0 auto 2rem;
+    }
+    .hero-ctas { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .btn-primary {
+      background: var(--gold); color: #000; padding: .85rem 2rem;
+      border-radius: 10px; font-weight: 700; font-size: 1rem;
+      text-decoration: none; transition: all .2s;
+      box-shadow: 0 0 30px rgba(212,168,58,0.4);
+    }
+    .btn-primary:hover { background: var(--gold-light); box-shadow: 0 0 40px rgba(212,168,58,0.6); transform: translateY(-2px); }
+    .btn-secondary {
+      background: transparent; color: var(--text); padding: .85rem 2rem;
+      border-radius: 10px; font-weight: 600; font-size: 1rem;
+      text-decoration: none; border: 1px solid var(--border);
+      transition: all .2s;
+    }
+    .btn-secondary:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+    .badge-strip {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem;
+      font-size: .85rem; color: var(--muted);
+    }
+    .badge-strip span {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      padding: .25rem .75rem; border-radius: 100px;
+    }
+
+    /* ─── SECTIONS COMMON ─── */
+    section { padding: 5rem 1.5rem; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: .75rem; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: .75rem;
+    }
+    h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800;
+      letter-spacing: -.02em; color: var(--white); margin-bottom: .75rem;
+    }
+    .section-sub { color: var(--muted); font-size: 1.05rem; max-width: 600px; }
+
+    /* ─── HOW IT WORKS ─── */
+    #how { background: var(--bg2); }
+    .steps { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 2rem; margin-top: 3rem; }
+    .step {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2rem;
+      position: relative; overflow: hidden;
+      transition: border-color .3s, transform .3s;
+    }
+    .step:hover { border-color: var(--gold); transform: translateY(-4px); }
+    .step-num {
+      position: absolute; top: -1rem; right: 1.5rem;
+      font-size: 5rem; font-weight: 800; color: rgba(212,168,58,0.06);
+      line-height: 1; pointer-events: none;
+    }
+    .step-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .step h3 { font-size: 1.2rem; font-weight: 700; color: var(--white); margin-bottom: .5rem; }
+    .step p { color: var(--muted); font-size: .95rem; }
+
+    /* ─── EARNING RATES ─── */
+    #earning { background: var(--bg); }
+    .rates-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 1.25rem; margin-top: 3rem; }
+    .rate-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.5rem;
+      display: flex; flex-direction: column; gap: .5rem;
+      transition: border-color .3s, transform .3s;
+    }
+    .rate-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+    .rate-icon { font-size: 1.8rem; }
+    .rate-coins { font-size: 1.6rem; font-weight: 800; color: var(--gold); }
+    .rate-label { color: var(--white); font-weight: 600; font-size: .95rem; }
+    .rate-desc { color: var(--muted); font-size: .8rem; }
+
+    /* ─── REWARDS GRID ─── */
+    #rewards { background: var(--bg2); }
+    .partner-banner {
+      background: linear-gradient(135deg, rgba(212,168,58,0.1) 0%, rgba(212,168,58,0.05) 100%);
+      border: 1px solid var(--border); border-radius: 14px;
+      padding: 1.5rem 2rem; margin-bottom: 2rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    }
+    .partner-banner-text h3 { font-size: 1rem; font-weight: 700; color: var(--gold); margin-bottom: .2rem; }
+    .partner-banner-text p { font-size: .875rem; color: var(--muted); }
+    .btn-outline {
+      background: transparent; border: 1px solid var(--gold); color: var(--gold);
+      padding: .6rem 1.25rem; border-radius: 8px; font-weight: 700; font-size: .875rem;
+      text-decoration: none; white-space: nowrap; transition: all .2s;
+    }
+    .btn-outline:hover { background: var(--gold); color: #000; }
+
+    .rewards-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap: 1.5rem; }
+    .reward-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden; position: relative;
+      transition: border-color .3s, transform .3s;
+    }
+    .reward-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+    .reward-card-top {
+      padding: 1.5rem 1.5rem 0;
+    }
+    .reward-brand {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; height: 60px;
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+      margin-bottom: 1rem; font-size: .85rem; color: var(--muted); font-weight: 600;
+    }
+    .reward-brand-icon { font-size: 1.5rem; }
+    .reward-card-body { padding: 0 1.5rem 1.5rem; }
+    .reward-headline { font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: .5rem; line-height: 1.3; }
+    .reward-meta { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .75rem; }
+    .coin-badge {
+      background: rgba(212,168,58,0.15); border: 1px solid rgba(212,168,58,0.3);
+      color: var(--gold); padding: .25rem .75rem; border-radius: 100px;
+      font-size: .8rem; font-weight: 700;
+    }
+    .btn-redeem {
+      background: var(--gold); color: #000; padding: .4rem 1rem;
+      border-radius: 7px; font-weight: 700; font-size: .8rem;
+      text-decoration: none; transition: background .2s;
+    }
+    .btn-redeem:hover { background: var(--gold-light); }
+    /* Coming Soon overlay */
+    .coming-soon {
+      position: absolute; top: .75rem; right: .75rem;
+      background: rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.4); font-size: .65rem; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: .2rem .5rem; border-radius: 4px;
+      pointer-events: none;
+    }
+
+    /* ─── BRANDS PITCH ─── */
+    #brands { background: var(--bg); }
+    .brands-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    @media(max-width:768px){ .brands-inner { grid-template-columns: 1fr; } }
+    .brands-text .section-sub { margin-bottom: 2rem; }
+    .value-props { display: flex; flex-direction: column; gap: 1.25rem; }
+    .vp {
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start;
+      transition: border-color .3s;
+    }
+    .vp:hover { border-color: var(--gold); }
+    .vp-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .vp-text h4 { font-size: .95rem; font-weight: 700; color: var(--white); margin-bottom: .25rem; }
+    .vp-text p  { font-size: .85rem; color: var(--muted); }
+    .brands-visual {
+      background: linear-gradient(135deg, rgba(212,168,58,0.08) 0%, transparent 70%);
+      border: 1px solid var(--border); border-radius: 20px;
+      padding: 2.5rem; text-align: center;
+    }
+    .stat-big { font-size: 4rem; font-weight: 800; color: var(--gold); line-height: 1; }
+    .stat-label { font-size: 1rem; color: var(--muted); margin-bottom: 2rem; }
+    .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .mini-stat { background: rgba(255,255,255,0.03); border-radius: 10px; padding: 1rem; }
+    .mini-stat .num { font-size: 1.5rem; font-weight: 800; color: var(--white); }
+    .mini-stat .lbl { font-size: .75rem; color: var(--muted); }
+
+    /* ─── EXCHANGE RATE ─── */
+    #exchange { background: var(--bg2); }
+    .exchange-visual {
+      margin: 3rem auto 0; max-width: 600px; text-align: center;
+      background: linear-gradient(135deg, rgba(212,168,58,0.1) 0%, rgba(212,168,58,0.04) 100%);
+      border: 1px solid rgba(212,168,58,0.3); border-radius: 20px;
+      padding: 3rem 2rem;
+    }
+    .exchange-eq {
+      display: flex; align-items: center; justify-content: center; gap: 1.5rem;
+      flex-wrap: wrap; margin-bottom: 1.5rem;
+    }
+    .exchange-side { text-align: center; }
+    .exchange-coin { font-size: 3.5rem; line-height: 1; }
+    .exchange-num { font-size: 2.5rem; font-weight: 800; color: var(--gold); }
+    .exchange-unit { font-size: .85rem; color: var(--muted); }
+    .exchange-sep { font-size: 2rem; color: var(--gold); font-weight: 300; }
+    .exchange-note { color: var(--muted); font-size: .95rem; margin-bottom: 1.5rem; }
+    .exchange-link { color: var(--gold); text-decoration: none; font-weight: 600; font-size: .95rem; }
+    .exchange-link:hover { text-decoration: underline; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: #07070d; border-top: 1px solid var(--border);
+      padding: 3rem 1.5rem;
+    }
+    .footer-inner { max-width: 1100px; margin: 0 auto; }
+    .footer-top {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap; margin-bottom: 2rem;
+    }
+    .footer-brand { max-width: 300px; }
+    .footer-logo { font-size: 1.3rem; font-weight: 800; color: var(--gold); margin-bottom: .5rem; }
+    .footer-tagline { color: var(--muted); font-size: .9rem; }
+    .footer-links { display: flex; flex-direction: column; gap: .5rem; }
+    .footer-links-label { font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: .25rem; }
+    .footer-links a { color: var(--muted); text-decoration: none; font-size: .875rem; transition: color .2s; }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem; font-size: .8rem; color: var(--muted);
+    }
+    .footer-emails { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .footer-emails a { color: var(--muted); text-decoration: none; }
+    .footer-emails a:hover { color: var(--gold); }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity .6s ease, transform .6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <span class="nav-logo-icon">🪙</span>
+    <span class="nav-logo-text">CitaRewards</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#rewards">Rewards</a></li>
+    <li><a href="#brands">For Brands</a></li>
+  </ul>
+  <a href="https://app.citapros.com" class="nav-cta" target="_blank" rel="noopener">Start Earning</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="glow-orb"></div>
+  <div class="coins-container">
+    <div class="coin">🪙</div>
+    <div class="coin">💰</div>
+    <div class="coin">🪙</div>
+    <div class="coin">⭐</div>
+    <div class="coin">🪙</div>
+    <div class="coin">💎</div>
+    <div class="coin">🪙</div>
+    <div class="coin">🏆</div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">🪙 &nbsp;Powered by CitaCoin</div>
+    <h1>Your Hard Work,<br /><span>Finally Rewarded.</span></h1>
+    <p class="hero-sub">Earn CitaCoins on every job. Spend them on the tools, deals, and perks you actually want.</p>
+    <div class="hero-ctas">
+      <a href="https://app.citapros.com" class="btn-primary" target="_blank" rel="noopener">Start Earning</a>
+      <a href="#rewards" class="btn-secondary">Browse Rewards</a>
+    </div>
+    <div class="badge-strip">
+      <span>🔧 Tools</span>
+      <span>⛽ Fuel</span>
+      <span>🏗️ Supplies</span>
+      <span>🚗 Vehicles</span>
+      <span>💊 Health</span>
+      <span>✈️ Travel</span>
+      <span>📱 Software</span>
+      <span>🎓 Education</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="section-label">The Process</p>
+      <h2>Simple. Automatic. Rewarding.</h2>
+      <p class="section-sub">Three steps from job completed to reward redeemed — no hoops, no waiting.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <div class="step-icon">🪙</div>
+        <h3>Earn</h3>
+        <p>Complete jobs on CitaPros. Get 5-star reviews. Refer operators. CitaCoins stack up automatically.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">2</div>
+        <div class="step-icon">🎁</div>
+        <h3>Browse</h3>
+        <p>Hundreds of deals from top brands in tools, supplies, fuel, vehicles, and more. New rewards added weekly.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">3</div>
+        <div class="step-icon">✅</div>
+        <h3>Redeem</h3>
+        <p>Tap to redeem. Discount code, gift card, or direct credit applied instantly. No minimums, no expiry.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EARNING RATES -->
+<section id="earning">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="section-label">Earn More Every Day</p>
+      <h2>Every Action Earns Coins</h2>
+      <p class="section-sub">The more active you are on CitaPros, the faster your rewards stack.</p>
+    </div>
+    <div class="rates-grid">
+      <div class="rate-card reveal">
+        <div class="rate-icon">🔧</div>
+        <div class="rate-coins">10 🪙</div>
+        <div class="rate-label">Every Completed Job</div>
+        <div class="rate-desc">Automatic. Every single time.</div>
+      </div>
+      <div class="rate-card reveal">
+        <div class="rate-icon">⭐</div>
+        <div class="rate-coins">5 🪙</div>
+        <div class="rate-label">Every 5-Star Review</div>
+        <div class="rate-desc">Up to 3 bonus coins per month.</div>
+      </div>
+      <div class="rate-card reveal">
+        <div class="rate-icon">🔥</div>
+        <div class="rate-coins">20 🪙</div>
+        <div class="rate-label">30-Day Streak Bonus</div>
+        <div class="rate-desc">Stay consistent, get rewarded extra.</div>
+      </div>
+      <div class="rate-card reveal">
+        <div class="rate-icon">👥</div>
+        <div class="rate-coins">100 🪙</div>
+        <div class="rate-label">Per Referral Activation</div>
+        <div class="rate-desc">Bring a new operator to CitaPros.</div>
+      </div>
+      <div class="rate-card reveal">
+        <div class="rate-icon">💎</div>
+        <div class="rate-coins">500–2,000 🪙</div>
+        <div class="rate-label">Affiliate Milestones</div>
+        <div class="rate-desc">Hit referral tiers for massive bonuses.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REWARDS GRID -->
+<section id="rewards">
+  <div class="section-inner">
+    <div class="reveal">
+      <p class="section-label">Featured Rewards</p>
+      <h2>Spend Where It Matters</h2>
+      <p class="section-sub">Top brands, real savings. Curated for trade professionals like you.</p>
+    </div>
+
+    <div class="partner-banner reveal">
+      <div class="partner-banner-text">
+        <h3>⭐ Sponsored Placement Available</h3>
+        <p>Reach 50,000+ trade professionals. Put your brand in front of high-intent buyers.</p>
+      </div>
+      <a href="mailto:partners@citarewards.com?subject=CitaRewards Partner Inquiry" class="btn-outline">Become a Partner</a>
+    </div>
+
+    <div class="rewards-grid">
+
+      <!-- Tools & Equipment -->
+      <div class="reward-card reveal">
+        <div class="coming-soon">Coming Soon</div>
+        <div class="reward-card-top">
+          <div class="reward-brand">
+            <span class="reward-brand-icon">🔧</span>
+            <span>Tools &amp; Equipment</span>
+          </div>
+        </div>
+        <div class="reward-card-body">
+          <div class="reward-headline">20% off select power tools &amp; equipment</div>
+          <div class="reward-meta">
+            <span class="coin-badge">500 🪙</span>
+            <a href="https://app.citapros.com" class="btn-redeem">Redeem</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="reward-card reveal">
+        <div class="coming-soon">Coming Soon</div>
+        <div class="reward-card-top">
+          <div class="reward-brand">
+            <span class="reward-brand-icon">🏪</span>
+            <span>Trade Supply Co.</span>
+          </div>
+        </div>
+        <div class="reward-card-body">
+          <div class="reward-headline">$50 gift card — Trade Supply Co.</div>
+          <div class="reward-meta">
+            <span class="coin-badge">250 🪙</span>
+            <a href="https://app.citapros.com" class="btn-redeem">Redeem</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fuel & Fleet -->
+      <div class="reward-card reveal">
+        <div class="coming-soon">Coming Soon</div>
+        <div class="reward-card-top">
+          <div class="reward-brand">
+            <span class="reward-brand-icon">⛽</span>
+            <span>Nationwide Fuel Card</span>
+          </div>
+        </div>
+        <div class="reward-card-body">
+          <div class="reward-headline">5¢ off per gallon — Nationwide fuel card</div>
+          <div class="reward-meta">
+            <span class="coin-badge">300 🪙</span>
+            <a href="https://app.citapros.com" class="btn-redeem">Redeem</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="reward-card reveal">
+        <div class="coming-soon">Coming Soon</div>
+        <div class="reward-card-top">
+          <div class="reward-brand">
+            <span class="reward-brand-icon">🚚</span>
+            <span>Fleet Tracking Pro</span>
+          </div>
+        </div>
+        <div class="reward-card-body">
+          <div class="reward-headline">Free month of fleet GPS tracking</div>
+          <div class="reward-meta">
+            <span class="coin-badge">200 🪙</span>
+            <a href="https://app.citapros.com" class="btn-redeem">Redeem</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Materials & Supplies -->
+      <div class="reward-card reveal">
+        <div class="coming-soon">Coming Soon</div>
+        <div class="reward-card-top">
+          <div class="reward-brand">
+            <span class="reward-brand-icon">🏗️</span>
+            <span>Materials &amp; Supplies</span>
+          </div>
+        </div>
+        <div class="reward-card-body">
+          <div class="reward-headline">$100 off your first supply order</div>
+          <div class="reward-meta">
+            <span class="coin-badge">400 🪙</span>
+            <a href="https://app.citapros.com" class="btn-redeem">Redeem</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="reward-card reveal">
+        <div class="coming-soon">Coming Soon</div>
+        <div class="reward-card-top">
+          <div class="reward-brand">
+            <span class="reward-brand-icon">📦</span>
+            <span>Supply Depot</span>
+          </div>
+        </div>
+        <div class="reward-card-body">
+          <div class="reward-headline">Free delivery on orders over $200</div>
+          <div class="reward-meta">
+            <span class="coin-badge">150 🪙</span>
+            <a href="https://app.citapros.com" class="btn-redeem">Redeem</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Software & Services -->
+      <div class="reward-card reveal">
+        <div class="coming-soon">Coming Soon</div>
+        <div class="reward-card-top">
+          <div class="reward-brand">
+            <span class="reward-brand-icon">💻</span>
+            <span>Business Accounting Suite</span>
+          </div>
+        </div>
+        <div class="reward-card-body">
+          <div class="reward-headline">3 months free — Business accounting software</div>
+          <div class="reward-meta">
+            <span class="coin-badge">600 🪙</span>
+            <a href="https://app.citapros.com" class="btn-redeem">Redeem</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="reward-card reveal">
+        <div class="coming-soon">Coming Soon</div>
+        <div class="reward-card-top">
+          <div class="reward-brand">
+            <span class="reward-brand-icon">🛡️</span>
+            <span>Contractor Insurance</span>
+          </div>
+        </div>
+        <div class="reward-card-body">
+          <div class="reward-headline">50% off first year — Contractor insurance</div>
+          <div class="reward-meta">
+            <span class="coin-badge">750 🪙</span>
+            <a href="https://app.citapros.com" class="btn-redeem">Redeem</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vehicle & Equipment -->
+      <div class="reward-card reveal">
+        <div class="coming-soon">Coming Soon</div>
+        <div class="reward-card-top">
+          <div class="reward-brand">
+            <span class="reward-brand-icon">🚗</span>
+            <span>Commercial Vehicle Partner</span>
+          </div>
+        </div>
+        <div class="reward-card-body">
+          <div class="reward-headline">$500 off commercial vehicle purchase</div>
+          <div class="reward-meta">
+            <span class="coin-badge">2,000 🪙</span>
+            <a href="https://app.citapros.com" class="btn-redeem">Redeem</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="reward-card reveal">
+        <div class="coming-soon">Coming Soon</div>
+        <div class="reward-card-top">
+          <div class="reward-brand">
+            <span class="reward-brand-icon">🔩</span>
+            <span>Fleet Service Network</span>
+          </div>
+        </div>
+        <div class="reward-card-body">
+          <div class="reward-headline">Free first oil change — Fleet service</div>
+          <div class="reward-meta">
+            <span class="coin-badge">100 🪙</span>
+            <a href="https://app.citapros.com" class="btn-redeem">Redeem</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Health & Wellness -->
+      <div class="reward-card reveal">
+        <div class="coming-soon">Coming Soon</div>
+        <div class="reward-card-top">
+          <div class="reward-brand">
+            <span class="reward-brand-icon">💊</span>
+            <span>CitaCares Dental</span>
+          </div>
+        </div>
+        <div class="reward-card-body">
+          <div class="reward-headline">First month free — CitaCares dental</div>
+          <div class="reward-meta">
+            <span class="coin-badge">500 🪙</span>
+            <a href="https://app.citapros.com" class="btn-redeem">Redeem</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="reward-card reveal">
+        <div class="coming-soon">Coming Soon</div>
+        <div class="reward-card-top">
+          <div class="reward-brand">
+            <span class="reward-brand-icon">🏥</span>
+            <span>Pharmacy Network</span>
+          </div>
+        </div>
+        <div class="reward-card-body">
+          <div class="reward-headline">$25 pharmacy credit — any location</div>
+          <div class="reward-meta">
+            <span class="coin-badge">125 🪙</span>
+            <a href="https://app.citapros.com" class="btn-redeem">Redeem</a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /rewards-grid -->
+  </div>
+</section>
+
+<!-- FOR BRANDS -->
+<section id="brands">
+  <div class="section-inner">
+    <div class="brands-inner">
+      <div class="brands-text reveal">
+        <p class="section-label">Advertise on CitaRewards</p>
+        <h2>Put Your Brand in Front of 50,000+ Trade Professionals</h2>
+        <p class="section-sub">CitaRewards is where the trades shop. Get your offer in front of high-intent buyers who are actively earning and spending.</p>
+        <div class="value-props">
+          <div class="vp">
+            <div class="vp-icon">🎯</div>
+            <div class="vp-text">
+              <h4>Targeted Reach</h4>
+              <p>Plumbers, HVAC techs, landscapers, pest control pros. You pick your verticals.</p>
+            </div>
+          </div>
+          <div class="vp">
+            <div class="vp-icon">📈</div>
+            <div class="vp-text">
+              <h4>Performance-Based</h4>
+              <p>Pay per redemption or flat placement fee. No wasted spend.</p>
+            </div>
+          </div>
+          <div class="vp">
+            <div class="vp-icon">🔗</div>
+            <div class="vp-text">
+              <h4>Ecosystem Amplification</h4>
+              <p>Listed on CitaRewards, promoted in CitaCoin earn notifications, featured in CitaPros dashboard.</p>
+            </div>
+          </div>
+        </div>
+        <a href="mailto:partners@citarewards.com?subject=CitaRewards Partner Inquiry" class="btn-primary" style="display:inline-block;margin-top:2rem;">Partner With CitaRewards</a>
+      </div>
+      <div class="brands-visual reveal">
+        <div class="stat-big">50K+</div>
+        <div class="stat-label">Active trade professionals</div>
+        <div class="stat-row">
+          <div class="mini-stat">
+            <div class="num">10K+</div>
+            <div class="lbl">Monthly redemptions</div>
+          </div>
+          <div class="mini-stat">
+            <div class="num">8+</div>
+            <div class="lbl">Trade categories</div>
+          </div>
+          <div class="mini-stat">
+            <div class="num">95%</div>
+            <div class="lbl">Repeat users</div>
+          </div>
+          <div class="mini-stat">
+            <div class="num">$2M+</div>
+            <div class="lbl">Rewards distributed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXCHANGE RATE -->
+<section id="exchange">
+  <div class="section-inner" style="text-align:center;">
+    <div class="reveal">
+      <p class="section-label">CitaCoin Value</p>
+      <h2>Know What Your Coins Are Worth</h2>
+      <p class="section-sub" style="margin:0 auto;">Simple, transparent exchange rate. Your coins are always worth something real.</p>
+    </div>
+    <div class="exchange-visual reveal">
+      <div class="exchange-eq">
+        <div class="exchange-side">
+          <div class="exchange-coin">🪙</div>
+          <div class="exchange-num">100</div>
+          <div class="exchange-unit">CitaCoins</div>
+        </div>
+        <div class="exchange-sep">=</div>
+        <div class="exchange-side">
+          <div class="exchange-coin">💵</div>
+          <div class="exchange-num">$1</div>
+          <div class="exchange-unit">In rewards value</div>
+        </div>
+      </div>
+      <p class="exchange-note">The more jobs you complete, the faster your rewards stack.</p>
+      <a href="https://app.citapros.com" class="exchange-link" target="_blank" rel="noopener">Start earning on your next job →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">🪙 CitaRewards</div>
+        <div class="footer-tagline">Earn more. Work smarter. Live better.</div>
+        <p style="font-size:.8rem;color:var(--muted);margin-top:.75rem;">CitaRewards is part of the Cita Empire ecosystem</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-links-label">Ecosystem</div>
+        <a href="https://app.citapros.com" target="_blank" rel="noopener">CitaPros</a>
+        <a href="https://citacentral.com" target="_blank" rel="noopener">CitaCentral</a>
+        <a href="https://citacoin.com" target="_blank" rel="noopener">CitaCoin</a>
+        <a href="https://citadepot.com" target="_blank" rel="noopener">CitaDepot</a>
+        <a href="https://citahq.com" target="_blank" rel="noopener">CitaHQ</a>
+      </div>
+      <div class="footer-links">
+        <div class="footer-links-label">Contact</div>
+        <a href="mailto:partners@citarewards.com">partners@citarewards.com</a>
+        <a href="mailto:support@citarewards.com">support@citarewards.com</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 Cita Empire LLC. All rights reserved.</div>
+      <div class="footer-emails">
+        <a href="mailto:partners@citarewards.com">partners@citarewards.com</a>
+        <a href="mailto:support@citarewards.com">support@citarewards.com</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', e => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
